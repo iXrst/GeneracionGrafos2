@@ -5,86 +5,42 @@ import java.nio.file.*;
 
 public class Grafo{
     private HashMap<Integer, Set<Integer>> map = new HashMap<>();
-    public static void main(String[] args) {
-        Grafo g4_1 = Grafo.genBarabasiAlbert(30, 10);
-        g4_1.toGVFile("genBarabasi30", g4_1.toString());
-        Grafo g4_2 = Grafo.genBarabasiAlbert(100, 10);
-        g4_2.toGVFile("genBarabasi100", g4_2.toString());
-        Grafo g4_3 = Grafo.genBarabasiAlbert(500, 10);
-        g4_3.toGVFile("genBarabasi500", g4_3.toString());
 
-        //BFS
-        Grafo bfs4_1 = Grafo.BFS(g4_1, 8);
-        bfs4_1.toGVFile("arbolgenBarabasi30_bfs", bfs4_1.toString());
-        //DFS_R
-        List<Integer> visitado1 = new ArrayList<>();
-        Grafo dfsr4_1 = new Grafo();
-        Grafo.DFS_recursivo(dfsr4_1, g4_1, 8, visitado1);
-        dfsr4_1.toGVFile("arbolgenBarabasi30_dfs_r", dfsr4_1.toString());
-        //DFS_I
-        Grafo dfsi4_1 = Grafo.DFS_iterativo(g4_1, 8);
-        dfsi4_1.toGVFile("arbolgenBarabasi30_dfs_i", dfsi4_1.toString());
-        
-        //BFS
-        Grafo bfs4_2 = Grafo.BFS(g4_2, 8);
-        bfs4_2.toGVFile("arbolgenBarabasi100_bfs", bfs4_2.toString());
-        //DFS_R
-        List<Integer> visitado2 = new ArrayList<>();
-        Grafo dfsr4_2 = new Grafo();
-        Grafo.DFS_recursivo(dfsr4_2, g4_2, 8, visitado2);
-        dfsr4_2.toGVFile("arbolgenBarabasi100_dfs_r", dfsr4_2.toString());
-        //DFS_I
-        Grafo dfsi4_2 = Grafo.DFS_iterativo(g4_2, 8);
-        dfsi4_2.toGVFile("arbolgenBarabasi100_dfs_i", dfsi4_2.toString());
-
-        //BFS
-        Grafo bfs4_3 = Grafo.BFS(g4_3, 8);
-        bfs4_3.toGVFile("arbolgenBarabasi500_bfs", bfs4_3.toString());
-        //DFS_R
-        List<Integer> visitado3 = new ArrayList<>();
-        Grafo dfsr4_3 = new Grafo();
-        Grafo.DFS_recursivo(dfsr4_3, g4_3, 8, visitado3);
-        dfsr4_3.toGVFile("arbolgenBarabasi500_dfs_r", dfsr4_3.toString());
-        //DFS_I
-        Grafo dfsi4_3 = Grafo.DFS_iterativo(g4_3, 8);
-        dfsi4_3.toGVFile("arbolgenBarabasi500_dfs_i", dfsi4_3.toString());
+    public void addNode(int nodo) {
+        map.put(nodo, new HashSet<Integer>());
     }
 
-    public void addNode(int vertice) {
-        map.put(vertice, new HashSet<Integer>());
-    }
-
-    public void addNodeConnections(int vertice, Set<Integer> adyacentes) {
-		map.put(vertice,adyacentes);
+    public void addNodeConnections(int nodo, Set<Integer> nodos_adyacentes) {
+		map.put(nodo,nodos_adyacentes);
 	}
 
-    public void delNode(int vertice){
-        map.remove(vertice);
+    public void delNode(int nodo){
+        map.remove(nodo);
     }
 
-    public void addEdge(int fuente, int destino, boolean bidireccional) {
-        if (!map.containsKey(fuente)) {
-            addNode(fuente);
+    public void addEdge(int nodo_fuente, int nodo_destino, boolean bidireccional) {
+        if (!map.containsKey(nodo_fuente)) {
+            addNode(nodo_fuente);
         }
-        if (!map.containsKey(destino)) {
-            addNode(destino);
+        if (!map.containsKey(nodo_destino)) {
+            addNode(nodo_destino);
         }
-        map.get(fuente).add(destino);
+        map.get(nodo_fuente).add(nodo_destino);
         if (bidireccional == true){
-            map.get(destino).add(fuente);
+            map.get(nodo_destino).add(nodo_fuente);
         }
     }
 
-    public boolean containsNode(int vertice){
-        return map.containsKey(vertice);
+    public boolean containsNode(int nodo){
+        return map.containsKey(nodo);
     }
 
     public Set<Integer> getNodes() {
         return map.keySet();
     }
 
-    public Set<Integer> getLinkedNodes(int vertice) {
-		return map.get(vertice);
+    public Set<Integer> getLinkedNodes(int nodo) {
+		return map.get(nodo);
 	} 
 
     public void getNodesCount(){ 
@@ -100,6 +56,32 @@ public class Grafo{
         System.out.println("El grafo tiene " + count + " aristas"); 
     } 
 
+    public void hasNode(int nodo){ 
+        if (map.containsKey(nodo)) { 
+            System.out.println("El grafo contiene "+ nodo + " como nodo"); 
+        } 
+        else { 
+            System.out.println("El grafo no contiene "+ nodo + " como nodo"); 
+        } 
+    } 
+  
+    public void hasEdge(int nodo_fuente, int nodo_destino){ 
+        if (map.get(nodo_fuente).contains(nodo_destino)) { 
+            System.out.println("El grafo tiene una arista entre los nodos " + nodo_fuente + " y " + nodo_destino); 
+        } 
+        else { 
+            System.out.println("El grafo no tiene una arista entre los nodos " + nodo_fuente + " y " + nodo_destino); 
+        } 
+    }
+
+    public int valueFrequency(int nodo){
+        int frequency = 0;
+        for (Set<Integer> conexiones : map.values()){
+            if(conexiones.contains(nodo)){frequency++;}
+        }
+        return frequency;
+    }
+
     public String toString(){
         StringBuilder res = new StringBuilder("graph abstract {\n");
 
@@ -111,26 +93,7 @@ public class Grafo{
             res.append("}\n");
         }
         res.append("}");
-
         return (res.toString());
-    }
-
-    public void hasNode(int s){ 
-        if (map.containsKey(s)) { 
-            System.out.println("El grafo contiene "+ s + " como nodo"); 
-        } 
-        else { 
-            System.out.println("El grafo no contiene "+ s + " como nodo"); 
-        } 
-    } 
-  
-    public void hasEdge(int s, int d){ 
-        if (map.get(s).contains(d)) { 
-            System.out.println("El grafo tiene una arista entre los nodos " + s + " y " + d); 
-        } 
-        else { 
-            System.out.println("El grafo no tiene una arista entre los nodos " + s + " y " + d); 
-        } 
     }
 
     public void toGVFile(String name, String graph){
@@ -139,15 +102,6 @@ public class Grafo{
             Files.writeString(path, graph);
         } catch (Exception e) {
         }
-    }
-
-    public int valueFrequency(int vertice){
-        int frequency = 0;
-        for (Set<Integer> conexiones : map.values()){
-            if(conexiones.contains(vertice)){frequency++;}
-        }
-        return frequency;
-
     }
 
     public static Grafo genErdosRenyi(int n, int m) {
@@ -215,18 +169,6 @@ public class Grafo{
         for (int i = 0; i < n; i++) {
             g.addNode(i);
         }
-        // Funciona para no bidireccionales
-        // for (int i = 0; i < d; i++) {
-        //     for (int j = 0; j < d; j++) {
-        //         if (i != j) {
-        //             if (g.map.get(i).contains(j) || g.map.get(j).contains(i)){
-        //             }
-        //             else{
-        //                 g.addEdge(i,j,false);
-        //             }
-        //         }
-        //     }
-        // }
         int k;
         for (int i = 1; i < d; i++){
             k = i - 1;
@@ -283,72 +225,64 @@ public class Grafo{
                 if(arbol.containsNode(nodoActual)){
                     Set<Integer> v = arbol.getLinkedNodes(nodoActual);
                     v.add(a);
-                }else{
-                    Set<Integer> newV = new HashSet<>();
-                    newV.add(a);
-                    arbol.addNodeConnections(nodoActual,newV);
+                }
+                else{
+                    Set<Integer> vertices = new HashSet<>();
+                    vertices.add(a);
+                    arbol.addNodeConnections(nodoActual,vertices);
                 }                
                 DFS_recursivo(arbol, grafo, a, visitado);
             }
         }
     }
 
-    public static void util(Grafo arbol, Grafo grafo, Integer destino ,List<Integer> visitado ) {
-        boolean seCreoConexion = false;
-        int nodo ;
-        for (int x =  visitado.size()-1; x >= 0 && !seCreoConexion; x-- )
-        {
-            nodo = visitado.get(x) ;
-            Set<Integer> conexiones = grafo.getLinkedNodes(nodo);
-            if (conexiones.contains(destino)) {
-                seCreoConexion = true;
-                if(arbol.containsNode(nodo)){
-                    Set<Integer> v = arbol.getLinkedNodes(nodo);
-                    v.add(destino);
-                }else{
-                    Set<Integer> newV = new HashSet<>();
-                    newV.add(destino);
-                    arbol.addNodeConnections(nodo,newV);
-                }              
-            }
-        }  
-    }
-
-    private static Grafo DFS_iterativo (Grafo grafo, int nodoInicio){
+    private static Grafo DFS_iterativo(Grafo grafo, int nodoInicio){
         Grafo arbol = new Grafo();
         List<Integer> visitado = new ArrayList<>();
-        Stack<Integer> porVisitar = new Stack<>(); 
-        int nodoActual ;
-        porVisitar.push(nodoInicio);
+        Stack<Integer> pila = new Stack<>(); 
+
+        int nodoActual;
+        pila.push(nodoInicio);
         
-        while(  0 < porVisitar.size() ){
-            //Obtiene el nodo que tiene que visitar
-            nodoActual = porVisitar.peek();
-            porVisitar.pop();
-            // Verifica que el nodo no sea visitado
-            if ( visitado.contains(nodoActual)) {
+        while(pila.size() > 0){
+            nodoActual = pila.peek();
+            pila.pop();
+            if (visitado.contains(nodoActual)) {
                 continue;
             }
-            //Agrega el nodo a visitados 
+
             visitado.add(nodoActual); 
-            
-            //Obtiene las conexiones del nodo
-            Set<Integer> ady = grafo.getLinkedNodes(nodoActual);      
-            List<Integer> adyacentes = new ArrayList<>(ady);
+            Set<Integer> adyacentes = grafo.getLinkedNodes(nodoActual);      
+            List<Integer> adyacentes_lista = new ArrayList<>(adyacentes);
             
             // Itera sobre las conexiones del nodo
-            for (int x =  adyacentes.size()-1; x >= 0; x-- )
-            {
-                int a = adyacentes.get(x);
-                
+            for (int x =  adyacentes_lista.size()-1; x >= 0; x--){
+                int a = adyacentes_lista.get(x);
                 if( !visitado.contains(a) ){
-                    //Agrega a nodo por visitar a una cola
-                    porVisitar.push(a);
+                    pila.push(a);
                 }
             }
              
-            if (porVisitar.size() > 0 &&  !visitado.contains( porVisitar.peek() ) ) {
-                util(arbol, grafo, porVisitar.peek(), visitado); 
+            if (pila.size() > 0 && !visitado.contains(pila.peek())){
+                boolean conexion = false;
+                int nodo ;
+                for (int x =  visitado.size()-1; x >= 0 && !conexion; x-- )
+                {
+                    nodo = visitado.get(x) ;
+                    Set<Integer> conexiones = grafo.getLinkedNodes(nodo);
+                    if (conexiones.contains(pila.peek())) {
+                        conexion = true;
+                        if(arbol.containsNode(nodo)){
+                            Set<Integer> v = arbol.getLinkedNodes(nodo);
+                            v.add(pila.peek());
+                        }
+                        else{
+                            Set<Integer> vertices = new HashSet<>();
+                            vertices.add(pila.peek());
+                            arbol.addNodeConnections(nodo,vertices);
+                        }              
+                    }
+                } 
             }            
         }
         return arbol;
