@@ -1,4 +1,1 @@
-# Generación de grafos con modelos proporcionados
-### Alumno: Oscar Alberto Rocha Arcos
-### Profesor: Dr. Rolando Quintero Téllez
-### Asignatura: Diseño y Análisis de Algoritmos
+# LOS METODOS DE RECORRIDO SE DECLARARON TODOS CON NODO DE INICIO "8"
