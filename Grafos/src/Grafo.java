@@ -255,7 +255,6 @@ public class Grafo{
             Set<Integer> adyacentes = grafo.getLinkedNodes(nodoActual);      
             List<Integer> adyacentes_lista = new ArrayList<>(adyacentes);
             
-            // Itera sobre las conexiones del nodo
             for (int x =  adyacentes_lista.size()-1; x >= 0; x--){
                 int a = adyacentes_lista.get(x);
                 if( !visitado.contains(a) ){
@@ -266,8 +265,7 @@ public class Grafo{
             if (pila.size() > 0 && !visitado.contains(pila.peek())){
                 boolean conexion = false;
                 int nodo ;
-                for (int x =  visitado.size()-1; x >= 0 && !conexion; x-- )
-                {
+                for (int x =  visitado.size()-1; x >= 0 && !conexion; x-- ){
                     nodo = visitado.get(x) ;
                     Set<Integer> conexiones = grafo.getLinkedNodes(nodo);
                     if (conexiones.contains(pila.peek())) {
